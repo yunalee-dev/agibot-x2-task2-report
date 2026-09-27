@@ -1,0 +1,53 @@
+{
+  "schema_version": "task2-phase-i-final-v1",
+  "status": "PASS_KINEMATIC_FINAL",
+  "generated_utc": "2026-09-27T08:42:40.593560+00:00",
+  "task_id": "task2_alternating_x_cross",
+  "model_path": "C:\\Users\\lyn04\\Project\\Robot_Self_Collision\\agibot_x2_urdf\\X2_URDF-v1.3.0\\x2_ultra.xml",
+  "model_sha256": "3be016eaa127c79ac547754d6e25c0930887efcf9577af33e9f5bb4ff4ed90d4",
+  "python_version": "3.13.5",
+  "numpy_version": "2.1.3",
+  "mujoco_version": "3.14.0",
+  "phase_h_selection_schema_version": "task2-phase-h-parameter-sweep-v1",
+  "selected_experiment_id": "d140_v220",
+  "selected_cross_depth_m": 0.14,
+  "selected_vertical_separation_m": 0.22,
+  "sampling_hz": 100,
+  "repeat_count": 5,
+  "sample_count": 4251,
+  "episode_duration_s": 8.5,
+  "total_duration_s": 42.5,
+  "penetration_count": 0,
+  "joint_limit_violation_count": 0,
+  "minimum_joint_limit_margin_rad": 0.02000000000000001,
+  "arm_arm_minimum_distance_m": 0.07093521398764308,
+  "arm_arm_minimum_time_s": 1.6,
+  "global_minimum_distance_m": 0.005653411586227938,
+  "global_minimum_time_s": 2.0,
+  "global_closest_pair": "left_shoulder_roll_link__torso_link",
+  "per_repeat_arm_arm_minimum_consistent": true,
+  "animation": {
+    "format": "GIF",
+    "path": "C:\\Users\\lyn04\\Project\\Robot_Self_Collision\\results\\task2\\task2_final.gif",
+    "frames": 214,
+    "width": 640,
+    "height": 480,
+    "frame_duration_ms": 40,
+    "duration_s": 8.56,
+    "verification": "Pillow metadata; Mediabunny runtime was not installed"
+  },
+  "kinematics_only": true,
+  "visual_acceptance": "PENDING_USER_REVIEW",
+  "tbd_status": {
+    "TBD-005": "OPEN",
+    "TBD-006": "OPEN",
+    "TBD-009": "OPEN"
+  },
+  "artifacts": {
+    "trajectory": "final_trajectory.csv",
+    "distance_records": "final_distance_records.csv",
+    "repeat_summary": "final_episode_summary.csv",
+    "animation": "task2_final.gif",
+    "field_contract": "task2_field_contract.md"
+  }
+}

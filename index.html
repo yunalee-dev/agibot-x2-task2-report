@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AgiBot X2 Ultra Task 2 최종 보고서</title>
+  <style>
+    :root {
+      --bg: #f3f6fb;
+      --surface: #ffffff;
+      --surface-soft: #eef3f9;
+      --text: #172033;
+      --muted: #5f6b7d;
+      --line: #dce3ed;
+      --nav: #101827;
+      --nav-soft: #1c2940;
+      --blue: #2f6fed;
+      --cyan: #2da8a8;
+      --green: #21865c;
+      --green-soft: #dff3e8;
+      --orange: #c97816;
+      --orange-soft: #fff0da;
+      --red: #be3f4c;
+      --red-soft: #fbe3e5;
+      --purple: #7652b5;
+      --shadow: 0 12px 32px rgba(30, 48, 76, 0.08);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--bg);
+      font-family: Inter, Pretendard, "Noto Sans KR", system-ui, -apple-system, sans-serif;
+      line-height: 1.65;
+    }
+    a { color: var(--blue); }
+    code {
+      padding: 0.15rem 0.38rem;
+      border-radius: 0.35rem;
+      background: #e9eef7;
+      color: #243451;
+      overflow-wrap: anywhere;
+    }
+    .layout { display: grid; grid-template-columns: 270px minmax(0, 1fr); min-height: 100vh; }
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 28px 20px;
+      overflow-y: auto;
+      color: #e8eef8;
+      background: var(--nav);
+    }
+    .brand { margin-bottom: 24px; }
+    .brand .eyebrow { color: #8fa7ca; font-size: 0.76rem; letter-spacing: 0.08em; text-transform: uppercase; }
+    .brand h1 { margin: 6px 0 8px; font-size: 1.25rem; line-height: 1.35; }
+    .brand p { margin: 0; color: #9fb0ca; font-size: 0.84rem; }
+    .toc-title { margin: 20px 10px 8px; color: #7890b4; font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; }
+    .toc { display: grid; gap: 4px; }
+    .toc a {
+      padding: 8px 10px;
+      border-radius: 8px;
+      color: #bbc8db;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .toc a:hover, .toc a.active { color: white; background: var(--nav-soft); }
+    .sidebar-footer {
+      margin-top: 26px;
+      padding: 14px;
+      border: 1px solid #2b3b56;
+      border-radius: 10px;
+      color: #9fb0ca;
+      font-size: 0.78rem;
+    }
+    main { width: min(1180px, 100%); margin: 0 auto; padding: 42px 38px 80px; }
+    .hero {
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 26px;
+      align-items: center;
+      min-height: 430px;
+      margin-bottom: 26px;
+      padding: 42px;
+      overflow: hidden;
+      border-radius: 24px;
+      color: white;
+      background: linear-gradient(135deg, #17243c 0%, #263e68 60%, #285c85 100%);
+      box-shadow: var(--shadow);
+    }
+    .hero .kicker { margin: 0 0 10px; color: #9fc9ff; font-weight: 700; }
+    .hero h2 { margin: 0 0 16px; font-size: clamp(2rem, 5vw, 3.65rem); line-height: 1.1; letter-spacing: -0.045em; }
+    .hero p { max-width: 700px; margin: 0; color: #d7e3f5; font-size: 1.05rem; }
+    .hero-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+    .hero-badges span { padding: 7px 11px; border-radius: 999px; background: rgba(255,255,255,0.11); font-size: 0.82rem; }
+    .hero-robot {
+      display: grid;
+      place-items: center;
+      min-height: 340px;
+      border-radius: 18px;
+      background: #030405;
+    }
+    .hero-robot img { width: 100%; max-height: 360px; object-fit: contain; }
+    section {
+      margin: 26px 0;
+      padding: 32px;
+      scroll-margin-top: 20px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    section > h2 { margin: 0 0 8px; font-size: 1.65rem; letter-spacing: -0.025em; }
+    section > .lead { margin: 0 0 24px; color: var(--muted); }
+    h3 { margin: 28px 0 10px; font-size: 1.15rem; }
+    .grid { display: grid; gap: 16px; }
+    .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .metric {
+      padding: 18px;
+      border-radius: 14px;
+      background: var(--surface-soft);
+    }
+    .metric .label { color: var(--muted); font-size: 0.8rem; }
+    .metric .value { margin-top: 4px; font-size: 1.55rem; font-weight: 750; letter-spacing: -0.03em; }
+    .metric .context { margin-top: 2px; color: var(--muted); font-size: 0.78rem; }
+    .status-pass { color: var(--green); }
+    .callout {
+      margin: 18px 0;
+      padding: 16px 18px;
+      border-left: 4px solid var(--blue);
+      border-radius: 0 10px 10px 0;
+      background: #edf4ff;
+    }
+    .callout.warn { border-left-color: var(--orange); background: var(--orange-soft); }
+    .callout.danger { border-left-color: var(--red); background: var(--red-soft); }
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin: 20px 0;
+    }
+    .flow .node { padding: 10px 13px; border-radius: 9px; background: #eaf0fa; font-weight: 700; font-size: 0.84rem; }
+    .flow .arrow { color: #8290a5; }
+    .phase-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
+    .phase {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+    }
+    .phase strong { display: block; margin-bottom: 5px; }
+    .phase small { color: var(--muted); }
+    .phase .dot { display: inline-block; width: 9px; height: 9px; margin-right: 7px; border-radius: 50%; background: var(--green); }
+    .gallery { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
+    figure { margin: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 14px; background: #050505; }
+    figure img { display: block; width: 100%; height: auto; object-fit: contain; }
+    figcaption { padding: 10px 13px; color: var(--muted); background: white; font-size: 0.8rem; }
+    .distance-rule { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 18px 0; }
+    .distance-rule div { padding: 18px; border-radius: 12px; text-align: center; }
+    .distance-rule .safe { background: var(--green-soft); color: #176a48; }
+    .distance-rule .touch { background: var(--orange-soft); color: #8b5310; }
+    .distance-rule .collision { background: var(--red-soft); color: #962d39; }
+    .stacked-bar { display: flex; height: 46px; margin: 14px 0 8px; overflow: hidden; border-radius: 10px; background: #e8edf5; }
+    .stacked-bar span { display: grid; place-items: center; min-width: 0; color: white; font-size: 0.77rem; font-weight: 700; }
+    .bar-safe { background: var(--green); }
+    .bar-near { background: var(--orange); }
+    .bar-collision { background: var(--red); }
+    .legend { display: flex; flex-wrap: wrap; gap: 14px; color: var(--muted); font-size: 0.8rem; }
+    .legend i { display: inline-block; width: 10px; height: 10px; margin-right: 5px; border-radius: 2px; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+    th, td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
+    th { color: var(--muted); background: #f7f9fc; font-weight: 700; }
+    td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .heatmap-table td { min-width: 125px; height: 75px; text-align: center; white-space: normal; }
+    .heatmap-table .ok { background: #d8f0df; color: #176a48; }
+    .heatmap-table .fail { background: #eceef2; color: #596273; }
+    .heatmap-table .cross-fail { background: #fff0c4; color: #7f5b08; }
+    .media-wide { margin-top: 16px; }
+    .media-wide img { display: block; width: 100%; border-radius: 14px; border: 1px solid var(--line); background: white; }
+    details { margin: 12px 0; border: 1px solid var(--line); border-radius: 10px; background: #fbfcfe; }
+    summary { padding: 13px 15px; font-weight: 700; cursor: pointer; }
+    details > div { padding: 0 15px 15px; color: var(--muted); }
+    .downloads { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 9px; }
+    .downloads a {
+      display: block;
+      padding: 11px 13px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      color: var(--text);
+      text-decoration: none;
+      background: #fbfcfe;
+    }
+    .downloads a:hover { border-color: #aebbd0; background: #f3f7fd; }
+    pre {
+      padding: 16px;
+      overflow-x: auto;
+      border-radius: 12px;
+      color: #d7e3f5;
+      background: #111a2a;
+      font-size: 0.82rem;
+    }
+    .report-footer { margin-top: 26px; padding: 24px; color: var(--muted); text-align: center; font-size: 0.8rem; }
+    @media (max-width: 900px) {
+      .layout { display: block; }
+      .sidebar { position: relative; height: auto; }
+      .toc { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      main { padding: 24px 18px 60px; }
+      .hero { grid-template-columns: 1fr; padding: 28px; }
+      .hero-robot { min-height: 260px; }
+      .grid.four, .grid.three, .phase-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+    @media (max-width: 620px) {
+      .toc, .grid.two, .grid.three, .grid.four, .phase-grid, .gallery, .downloads, .distance-rule { grid-template-columns: 1fr; }
+      section { padding: 22px 18px; }
+      .hero { border-radius: 16px; }
+    }
+    @media print {
+      body { background: white; }
+      .layout { display: block; }
+      .sidebar { display: none; }
+      main { width: 100%; padding: 0; }
+      .hero, section { break-inside: avoid; box-shadow: none; }
+      section { border-color: #cfd5de; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="eyebrow">Final technical report</div>
+        <h1>AgiBot X2 Ultra<br>Task 2</h1>
+        <p>양팔 번갈아 X자로 교차하기</p>
+      </div>
+      <div class="toc-title">목차</div>
+      <nav class="toc" aria-label="보고서 목차">
+        <a href="#summary">1. 한눈에 보기</a>
+        <a href="#robot">2. 로봇 모형</a>
+        <a href="#goal">3. 목표 동작</a>
+        <a href="#work">4. 무엇을 했나</a>
+        <a href="#poses">5. 자세 결과</a>
+        <a href="#collision">6. 충돌 계산</a>
+        <a href="#dataset">7. 데이터 분리</a>
+        <a href="#sweep">8. 파라미터 탐색</a>
+        <a href="#final">9. 최종 시연</a>
+        <a href="#act">10. ACT에서의 활용</a>
+        <a href="#limits">11. 한계와 주의점</a>
+        <a href="#reproduce">12. 재현과 파일</a>
+      </nav>
+      <div class="sidebar-footer">
+        생성일: 2026-09-27<br>
+        모델: X2 Ultra v1.3.0<br>
+        최종 상태: 수치 검증 통과
+      </div>
+    </aside>
+
+    <main>
+      <header class="hero">
+        <div>
+          <p class="kicker">AgiBot X2 Ultra · Self-Collision Study</p>
+          <h2>양팔을 번갈아<br>X자로 교차하기</h2>
+          <p>로봇 모델을 확인하고, 세 가지 핵심 자세를 만든 뒤, 모든 중간 프레임에서 관절 범위와 자기충돌을 검사했습니다. 충돌 데이터는 ACT의 정답 행동과 분리해 저장했습니다.</p>
+          <div class="hero-badges">
+            <span>Phases A–I 완료</span>
+            <span>31/31 테스트 통과</span>
+            <span>4,251 최종 프레임 검사</span>
+            <span>관통 0회</span>
+          </div>
+        </div>
+        <div class="hero-robot">
+          <img src="open_front.png" alt="AgiBot X2 Ultra OPEN 자세 정면">
+        </div>
+      </header>
+
+      <section id="summary">
+        <h2>1. 한눈에 보기</h2>
+        <p class="lead">결론부터 말하면, 요청한 X자 교차 동작을 만들었고 최종 5회 반복에서 모델상 관통이나 관절 한계 위반이 없었습니다.</p>
+        <div class="grid four">
+          <div class="metric"><div class="label">최종 검사 프레임</div><div class="value">4,251</div><div class="context">100 Hz · 5회 반복</div></div>
+          <div class="metric"><div class="label">팔↔팔 최소거리</div><div class="value">70.94 mm</div><div class="context">모든 반복에서 동일</div></div>
+          <div class="metric"><div class="label">관통 / 한계 위반</div><div class="value status-pass">0 / 0</div><div class="context">전 프레임 검사</div></div>
+          <div class="metric"><div class="label">자동 테스트</div><div class="value status-pass">31 / 31</div><div class="context">전체 회귀 테스트</div></div>
+        </div>
+        <div class="callout">
+          <strong>쉽게 말하면:</strong> 로봇의 양팔을 한 번은 왼팔이 위로, 다음에는 오른팔이 위로 교차하도록 만들고, 움직이는 도중까지 포함해 모델 안에서 서로 파고들지 않는지 검사했습니다.
+        </div>
+      </section>
+
+      <section id="robot">
+        <h2>2. 사용한 로봇 모형</h2>
+        <p class="lead">공식 AgiBot X2 Ultra v1.3.0 MuJoCo 모델을 수정하지 않고 그대로 불러와 분석했습니다.</p>
+        <div class="grid four">
+          <div class="metric"><div class="label">자세 좌표 수</div><div class="value">nq 38</div></div>
+          <div class="metric"><div class="label">속도 좌표 수</div><div class="value">nv 37</div></div>
+          <div class="metric"><div class="label">Body / Geom</div><div class="value">33 / 84</div></div>
+          <div class="metric"><div class="label">참조 Mesh</div><div class="value">37</div></div>
+        </div>
+        <div class="grid two" style="margin-top:16px">
+          <div>
+            <h3>움직인 부분</h3>
+            <ul>
+              <li>왼팔 7개 관절</li>
+              <li>오른팔 7개 관절</li>
+              <li>총 14 DoF만 변경</li>
+            </ul>
+          </div>
+          <div>
+            <h3>고정한 부분</h3>
+            <ul>
+              <li>floating base</li>
+              <li>다리, 허리, 머리</li>
+              <li>모델의 기준 자세 qpos0 유지</li>
+            </ul>
+          </div>
+        </div>
+        <div class="callout warn">
+          모델에는 별도 손·그리퍼 body가 없어서 손의 대표점은 wrist-roll 충돌 mesh에서 몸체 원점으로부터 가장 먼 꼭짓점을 자동으로 골라 사용했습니다.
+        </div>
+        <details>
+          <summary>모델 파일과 실행 환경</summary>
+          <div>
+            모델 경로: <code>agibot_x2_urdf/X2_URDF-v1.3.0/x2_ultra.xml</code><br>
+            SHA-256: <code>3be016eaa127c79ac547754d6e25c0930887efcf9577af33e9f5bb4ff4ed90d4</code><br>
+            Python 3.13.5 · NumPy 2.1.3 · MuJoCo 3.14.0
+          </div>
+        </details>
+      </section>
+
+      <section id="goal">
+        <h2>3. 목표 동작</h2>
+        <p class="lead">한 episode는 아래 순서이며, 왼손과 오른손이 실제로 몸 중심선을 넘어가도록 했습니다.</p>
+        <div class="flow" aria-label="동작 순서">
+          <span class="node">OPEN</span><span class="arrow">→</span>
+          <span class="node">LEFT OVER RIGHT</span><span class="arrow">→</span>
+          <span class="node">OPEN</span><span class="arrow">→</span>
+          <span class="node">RIGHT OVER LEFT</span><span class="arrow">→</span>
+          <span class="node">OPEN</span>
+        </div>
+        <p>손끝 높이만 바꾼 것이 아닙니다. 교차 부근에서 실제 팔 collision geometry의 최근접 지점을 찾아 어느 팔이 위에 있는지 확인했습니다.</p>
+      </section>
+
+      <section id="work">
+        <h2>4. 무엇을 했나</h2>
+        <p class="lead">A부터 I까지 모델 확인, 자세 생성, 전 경로 분석, 데이터 분리, 파라미터 탐색, 최종 반복 검증 순서로 진행했습니다.</p>
+        <div class="phase-grid">
+          <div class="phase"><strong><span class="dot"></span>A · 모델 감사</strong><small>관절, body, geom, mesh, 좌표계를 실제 모델에서 추출</small></div>
+          <div class="phase"><strong><span class="dot"></span>B · 측정 기준</strong><small>양팔만 움직이는 공통 로더와 signed distance 의미 확인</small></div>
+          <div class="phase"><strong><span class="dot"></span>C · OPEN</strong><small>양팔을 벌린 시작·복귀 자세를 IK로 생성</small></div>
+          <div class="phase"><strong><span class="dot"></span>D · 왼팔 위</strong><small>최근접 표면에서 왼팔이 위인지 검증</small></div>
+          <div class="phase"><strong><span class="dot"></span>E · 오른팔 위</strong><small>반대 방향도 독립적으로 다시 계산</small></div>
+          <div class="phase"><strong><span class="dot"></span>F · 연속 궤적</strong><small>minimum-jerk 보간, 100 Hz 전 프레임 검사</small></div>
+          <div class="phase"><strong><span class="dot"></span>G · 충돌 분석</strong><small>거리 분포와 위험 pair, SAFE/NEAR/COLLISION/RECOVERY 분리</small></div>
+          <div class="phase"><strong><span class="dot"></span>H · 파라미터 탐색</strong><small>cross depth × vertical separation 2D sweep</small></div>
+          <div class="phase"><strong><span class="dot"></span>I · 최종 시연</strong><small>선택값으로 5회 반복, 4,251프레임 최종 검사</small></div>
+        </div>
+      </section>
+
+      <section id="poses">
+        <h2>5. 핵심 자세 결과</h2>
+        <p class="lead">아래 이미지는 최종 Phase H에서 선택한 자세입니다. 정면과 측면을 함께 확인할 수 있습니다.</p>
+        <h3>OPEN</h3>
+        <div class="gallery">
+          <figure><img src="open_front.png" alt="OPEN 정면"><figcaption>정면: 양팔이 몸 앞에서 벌어져 있음</figcaption></figure>
+          <figure><img src="open_side.png" alt="OPEN 측면"><figcaption>측면: 손이 몸 앞쪽에 위치함</figcaption></figure>
+        </div>
+        <h3>LEFT OVER RIGHT</h3>
+        <div class="gallery">
+          <figure><img src="phase_h_selected_left_over_right_front.png" alt="왼팔 위 교차 정면"><figcaption>정면: 왼팔이 위인 X자 교차</figcaption></figure>
+          <figure><img src="phase_h_selected_left_over_right_side.png" alt="왼팔 위 교차 측면"><figcaption>측면: 교차 지점의 실제 앞뒤·높이 관계</figcaption></figure>
+        </div>
+        <h3>RIGHT OVER LEFT</h3>
+        <div class="gallery">
+          <figure><img src="phase_h_selected_right_over_left_front.png" alt="오른팔 위 교차 정면"><figcaption>정면: 오른팔이 위인 X자 교차</figcaption></figure>
+          <figure><img src="phase_h_selected_right_over_left_side.png" alt="오른팔 위 교차 측면"><figcaption>측면: 반대 방향도 독립적으로 검증</figcaption></figure>
+        </div>
+        <div class="grid two" style="margin-top:16px">
+          <div class="metric"><div class="label">왼팔 위 최근접 높이 차</div><div class="value">67.36 mm</div></div>
+          <div class="metric"><div class="label">오른팔 위 최근접 높이 차</div><div class="value">67.51 mm</div></div>
+        </div>
+      </section>
+
+      <section id="collision">
+        <h2>6. 자기충돌을 어떻게 계산했나</h2>
+        <p class="lead">각 자세에서 모든 검사 대상 geometry 쌍의 signed distance를 계산했습니다.</p>
+        <div class="distance-rule">
+          <div class="safe"><strong>거리 &gt; 0</strong><br>서로 떨어져 있음</div>
+          <div class="touch"><strong>거리 = 0</strong><br>표면이 맞닿음</div>
+          <div class="collision"><strong>거리 &lt; 0</strong><br>서로 관통함</div>
+        </div>
+        <p>팔↔팔뿐 아니라 왼팔↔나머지 로봇, 오른팔↔나머지 로봇도 검사했습니다. 경로의 시작과 끝만 보는 것이 아니라 100 Hz의 모든 중간 프레임을 계산했습니다.</p>
+        <div class="media-wide">
+          <img src="g2_arm_arm_distance.png" alt="시간에 따른 팔과 팔 사이 최소거리 그래프">
+        </div>
+        <div class="callout">
+          그래프의 보라색 점이 기존 승인 궤적에서 가장 가까운 순간입니다. 최종 H/I 선택에서는 팔↔팔 최소거리가 약 70.94 mm였습니다.
+        </div>
+        <div class="callout warn">
+          전체 최소거리 약 5.65 mm는 팔끼리의 거리가 아니라 shoulder-roll ↔ torso의 설계상 항상 가까운 간격입니다. 그래서 이 pair를 그대로 global threshold에 넣으면 거의 모든 자세가 위험으로 오분류됩니다.
+        </div>
+      </section>
+
+      <section id="dataset">
+        <h2>7. 데이터를 어떻게 나눴나</h2>
+        <p class="lead">ACT가 충돌 자세를 정답 행동으로 모방하지 않도록 데이터의 용도를 명확히 분리했습니다.</p>
+        <div class="stacked-bar" aria-label="G2 상태 분포">
+          <span class="bar-safe" style="width:87.94%">SAFE 977</span>
+          <span class="bar-near" style="width:4.05%"></span>
+          <span class="bar-collision" style="width:8.01%">89</span>
+        </div>
+        <div class="legend">
+          <span><i class="bar-safe"></i>SAFE 977</span>
+          <span><i class="bar-near"></i>NEAR 45</span>
+          <span><i class="bar-collision"></i>COLLISION 89</span>
+        </div>
+        <div class="grid three" style="margin-top:18px">
+          <div class="metric"><div class="label">안전 시연</div><div class="value">851 rows</div><div class="context">정상 Task 2 동작</div></div>
+          <div class="metric"><div class="label">Recovery</div><div class="value">11 episodes</div><div class="context">561 rows · 관통 0</div></div>
+          <div class="metric"><div class="label">충돌 정답 유입</div><div class="value status-pass">0 rows</div><div class="context">negative/evaluation 전용</div></div>
+        </div>
+        <h3>분류 규칙</h3>
+        <ul>
+          <li><strong>COLLISION:</strong> 검사 범위 중 하나라도 signed distance가 0보다 작음</li>
+          <li><strong>NEAR:</strong> 관통은 없지만 팔↔팔 거리가 Task 2 임시 기준 20 mm 미만</li>
+          <li><strong>SAFE:</strong> 관통이 없고 팔↔팔 거리가 20 mm 이상</li>
+          <li><strong>RECOVERY:</strong> NEAR 상태에서 승인된 안전 자세로 빠져나오는 검증된 궤적</li>
+        </ul>
+        <div class="callout danger">
+          89개의 COLLISION 상태는 충돌 판별기나 평가용 negative sample입니다. ACT 행동 정답으로는 한 행도 사용하지 않습니다.
+        </div>
+      </section>
+
+      <section id="sweep">
+        <h2>8. Phase H 파라미터 탐색</h2>
+        <p class="lead">팔이 반대편으로 넘어가는 깊이와 위아래 간격을 3×3로 바꾸어 양쪽 교차 자세와 전체 경로를 다시 검사했습니다.</p>
+        <div class="gallery">
+          <figure><img src="phase_h_status_heatmap.png" alt="Phase H 성공 실패 heatmap"><figcaption>초록색만 양방향 자세와 경로가 모두 통과한 조합</figcaption></figure>
+          <figure><img src="phase_h_clearance_heatmap.png" alt="Phase H 팔 사이 최소거리 heatmap"><figcaption>통과 조합의 20 Hz 경로 팔↔팔 최소거리</figcaption></figure>
+        </div>
+        <h3>9개 실험 결과</h3>
+        <div class="table-wrap">
+          <table class="heatmap-table">
+            <thead><tr><th>Vertical \ Depth</th><th>0.11 m</th><th>0.14 m</th><th>0.17 m</th></tr></thead>
+            <tbody>
+              <tr><th>0.28 m</th><td class="ok">SAFE<br>107.0 mm</td><td class="fail">IK FAIL</td><td class="fail">IK FAIL</td></tr>
+              <tr><th>0.22 m</th><td class="ok">SAFE<br>80.1 mm</td><td class="ok"><strong>SELECTED</strong><br>70.9 mm</td><td class="fail">IK FAIL</td></tr>
+              <tr><th>0.16 m</th><td class="cross-fail">교차 관계 실패</td><td class="cross-fail">교차 관계 실패</td><td class="fail">IK FAIL</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout">
+          가장 큰 거리만 고르지 않았습니다. 이미 사용자가 승인한 동작 모양과 가장 가까우면서 전 경로가 안전한 <strong>depth 0.14 m / vertical 0.22 m</strong>를 선택했습니다.
+        </div>
+      </section>
+
+      <section id="final">
+        <h2>9. 최종 Task 2 시연</h2>
+        <p class="lead">선택된 H 파라미터로 5회 반복을 만들고 100 Hz 전 프레임을 다시 검사했습니다.</p>
+        <figure>
+          <img src="task2_final.gif" alt="최종 Task 2 애니메이션">
+          <figcaption>최종 episode 1회분 애니메이션 · 실제 검증 파일에는 5회 반복이 포함됨</figcaption>
+        </figure>
+        <div class="grid four" style="margin-top:16px">
+          <div class="metric"><div class="label">반복</div><div class="value">5회</div></div>
+          <div class="metric"><div class="label">총 시간</div><div class="value">42.5 s</div></div>
+          <div class="metric"><div class="label">최소 관절 여유</div><div class="value">0.020 rad</div></div>
+          <div class="metric"><div class="label">반복 일관성</div><div class="value status-pass">PASS</div></div>
+        </div>
+        <h3>반복별 결과</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Repeat</th><th class="num">샘플</th><th class="num">팔↔팔 최소거리</th><th class="num">전체 최소거리</th><th class="num">관통</th></tr></thead>
+            <tbody>
+              <tr><td>0</td><td class="num">851</td><td class="num">70.935 mm</td><td class="num">5.653 mm</td><td class="num">0</td></tr>
+              <tr><td>1</td><td class="num">850</td><td class="num">70.935 mm</td><td class="num">5.653 mm</td><td class="num">0</td></tr>
+              <tr><td>2</td><td class="num">850</td><td class="num">70.935 mm</td><td class="num">5.653 mm</td><td class="num">0</td></tr>
+              <tr><td>3</td><td class="num">850</td><td class="num">70.935 mm</td><td class="num">5.653 mm</td><td class="num">0</td></tr>
+              <tr><td>4</td><td class="num">850</td><td class="num">70.935 mm</td><td class="num">5.653 mm</td><td class="num">0</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="color:var(--muted);font-size:0.82rem">반복 경계의 동일한 OPEN 프레임은 중복 저장하지 않아 첫 반복은 851행, 이후 반복은 각각 850행입니다.</p>
+      </section>
+
+      <section id="act">
+        <h2>10. 이후 ACT에서 어떻게 쓰나</h2>
+        <p class="lead">이번 작업은 ACT 자체를 학습한 것이 아니라, ACT에 넣을 수 있는 안전한 행동과 충돌 정보를 준비한 단계입니다.</p>
+        <div class="flow">
+          <span class="node">관절 q</span><span class="arrow">+</span>
+          <span class="node">이미지</span><span class="arrow">+</span>
+          <span class="node">충돌 거리 feature</span><span class="arrow">→</span>
+          <span class="node">ACT</span><span class="arrow">→</span>
+          <span class="node">다음 action chunk</span>
+        </div>
+        <div class="grid two">
+          <div class="callout">
+            <strong>행동 학습에 사용</strong><br>
+            승인된 SAFE 시연과 전 경로가 검증된 RECOVERY 시연
+          </div>
+          <div class="callout danger">
+            <strong>행동 정답에서 제외</strong><br>
+            COLLISION 상태와 행동이 없는 무작위 probe
+          </div>
+        </div>
+        <p>원본 pairwise distance는 재사용 가능한 데이터로 보존하고, SAFE/NEAR 같은 라벨이나 정규화 feature는 별도 버전으로 만들어야 합니다. 그래야 임계값을 바꿔도 원본 데이터를 다시 계산할 필요가 없습니다.</p>
+      </section>
+
+      <section id="limits">
+        <h2>11. 해석할 때 주의할 점</h2>
+        <p class="lead">수치 검증은 통과했지만 실제 로봇 안전 인증과는 다릅니다.</p>
+        <ul>
+          <li>이번 결과는 MuJoCo에서 qpos를 직접 넣고 <code>mj_forward</code>를 수행한 운동학적 검증입니다.</li>
+          <li>모터 토크, 추종 오차, 균형, 관성, 케이블, 외피 변형은 검증하지 않았습니다.</li>
+          <li>mesh 거리는 MuJoCo의 convex collision 처리 결과입니다.</li>
+          <li>원본 모델의 wrist-yaw collision surface가 빠져 있습니다.</li>
+          <li>5.65 mm global minimum은 고정적으로 가까운 shoulder-roll ↔ torso pair입니다.</li>
+          <li>20 mm NEAR 기준은 Task 2 분석용 임시 값이며 공식 안전 기준이 아닙니다.</li>
+        </ul>
+        <div class="callout warn">
+          따라서 결과의 의미는 “현재 모델과 검사 범위 안에서 관통이 발견되지 않았다”입니다. “실제 하드웨어에서 안전이 인증되었다”는 뜻은 아닙니다.
+        </div>
+      </section>
+
+      <section id="reproduce">
+        <h2>12. 재현 방법과 주요 파일</h2>
+        <p class="lead">아래 명령으로 H와 I를 다시 생성하고, 최종 궤적을 MuJoCo viewer에서 반복 재생할 수 있습니다.</p>
+        <pre>&amp; 'C:\Users\lyn04\anaconda3\python.exe' -m scripts.task2.run_phase_h
+&amp; 'C:\Users\lyn04\anaconda3\python.exe' -m scripts.task2.run_phase_i
+&amp; 'C:\Users\lyn04\anaconda3\python.exe' -m unittest discover -s tests -v
+&amp; 'C:\Users\lyn04\anaconda3\python.exe' -m scripts.task2.play_trajectory --trajectory results/task2/final_trajectory.csv --repeats 1 --loop</pre>
+        <div class="downloads">
+          <a href="README.md">전체 Task 2 README</a>
+          <a href="final_manifest.json">최종 Manifest JSON</a>
+          <a href="final_trajectory.csv">최종 궤적 CSV</a>
+          <a href="final_distance_records.csv">최종 거리 기록 CSV</a>
+          <a href="final_episode_summary.csv">반복별 요약 CSV</a>
+          <a href="task2_field_contract.md">필드 계약 문서</a>
+          <a href="phase_h_sweep.csv">Phase H 전체 실험 CSV</a>
+          <a href="g2_labeled_states.csv">SAFE/NEAR/COLLISION 상태 데이터</a>
+          <a href="g2_recovery_demonstrations.csv">Recovery 시연 데이터</a>
+          <a href="g2_negative_collision_states.csv">Collision negative 데이터</a>
+        </div>
+      </section>
+
+      <footer class="report-footer">
+        AgiBot X2 Ultra Task 2 · 모델 상대적 self-collision 및 운동학적 시연 검증 보고서
+      </footer>
+    </main>
+  </div>
+  <script>
+    (function () {
+      var links = Array.prototype.slice.call(document.querySelectorAll(".toc a"));
+      var sections = links.map(function (link) {
+        return document.querySelector(link.getAttribute("href"));
+      }).filter(Boolean);
+      function updateActive() {
+        var current = sections[0];
+        sections.forEach(function (section) {
+          if (section.getBoundingClientRect().top <= 140) current = section;
+        });
+        links.forEach(function (link) {
+          link.classList.toggle("active", link.getAttribute("href") === "#" + current.id);
+        });
+      }
+      window.addEventListener("scroll", updateActive, { passive: true });
+      updateActive();
+    })();
+  </script>
+</body>
+</html>
