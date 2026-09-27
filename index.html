@@ -180,6 +180,9 @@
     .heatmap-table .ok { background: #d8f0df; color: #176a48; }
     .heatmap-table .fail { background: #eceef2; color: #596273; }
     .heatmap-table .cross-fail { background: #fff0c4; color: #7f5b08; }
+    .parameter-grid td { min-width: 185px; height: 118px; padding: 12px; white-space: normal; vertical-align: top; }
+    .parameter-grid td strong { display: block; margin-bottom: 4px; }
+    .parameter-grid td small { display: block; margin-top: 5px; line-height: 1.45; }
     .explain-table td { white-space: normal; vertical-align: top; }
     .explain-table td:last-child { min-width: 260px; }
     .media-wide { margin-top: 16px; }
@@ -466,20 +469,86 @@
       <section id="sweep">
         <h2>8. H단계 파라미터 탐색</h2>
         <p class="lead">팔이 반대편으로 넘어가는 깊이와 위아래 간격을 3×3로 바꾸어 양쪽 교차 자세와 전체 경로를 다시 검사했습니다.</p>
+        <h3>먼저 정한 판정 기준</h3>
+        <div class="table-wrap">
+          <table class="explain-table">
+            <thead><tr><th>검사 항목</th><th>기준값</th><th>기준을 둔 이유</th><th>H단계 판정에 사용</th></tr></thead>
+            <tbody>
+              <tr><td>손 대표점 위치 오차</td><td><strong>5 mm 이하</strong></td><td>목표 위치를 충분히 따라갔는지 판정하는 임시 역기구학 정확도 기준</td><td>초과하면 역기구학 실패</td></tr>
+              <tr><td>관절 한계 여유</td><td><strong>0.020 rad 이상</strong><br>약 1.15°</td><td>수치해가 관절 끝에 붙는 것을 막기 위한 임시 여유</td><td>미달하면 정적 검사 실패</td></tr>
+              <tr><td>몸 중심선 교차 깊이</td><td><strong>최소 0.10 m</strong></td><td>손이 단순히 가운데에 모인 것이 아니라 실제로 반대편까지 넘어갔는지 확인</td><td>미달하면 교차 관계 실패</td></tr>
+              <tr><td>최근접 팔 표면 높이 차</td><td><strong>최소 0.04 m</strong><br>40 mm</td><td>실제 교차 지점에서도 어느 팔이 위인지 명확히 구분하기 위한 임시 동작 기준</td><td>미달하면 교차 관계 실패</td></tr>
+              <tr><td>정지·경로 최소거리</td><td><strong>0 m 이상</strong></td><td>부호 있는 거리가 음수이면 충돌 형상이 서로 관통한 것으로 판정</td><td>음수 프레임이 있으면 실패</td></tr>
+              <tr><td>전 경로 1차 검사</td><td><strong>20 Hz</strong><br>한 동작 171프레임</td><td>9개 조합의 연속 경로를 동일한 비용으로 빠르게 비교</td><td>통과 후보만 안전 후보</td></tr>
+              <tr><td>최종 후보 재검사</td><td><strong>100 Hz</strong><br>한 동작 851프레임</td><td>선택된 조합을 더 촘촘한 시간 간격으로 다시 확인</td><td>최종 선택 검증</td></tr>
+              <tr><td>근접 라벨 경계</td><td><strong>팔↔팔 20 mm</strong></td><td>충돌은 아니지만 가까운 상태를 데이터에서 구분하기 위한 작업 2 임시값</td><td>H단계 통과·실패 기준은 아님</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout warn">
+          5 mm, 0.020 rad, 40 mm, 20 mm는 제조사 안전 규격이 아니라 이번 파일럿 실험을 일관되게 비교하기 위한 임시 기준입니다. 특히 20 mm는 데이터 라벨용이고 H단계의 안전 후보를 탈락시키는 기준으로 사용하지 않았습니다.
+        </div>
         <div class="gallery">
           <figure><img src="phase_h_status_heatmap.png" alt="H단계 성공 실패 색상표"><figcaption>초록색만 양방향 자세와 경로가 모두 통과한 조합</figcaption></figure>
           <figure><img src="phase_h_clearance_heatmap.png" alt="H단계 팔 사이 최소거리 색상표"><figcaption>통과 조합의 20 Hz 경로 팔↔팔 최소거리</figcaption></figure>
         </div>
         <h3>9개 실험 결과</h3>
         <div class="table-wrap">
-          <table class="heatmap-table">
+          <table class="heatmap-table parameter-grid">
             <thead><tr><th>높이 차 \ 교차 깊이</th><th>0.11 m</th><th>0.14 m</th><th>0.17 m</th></tr></thead>
             <tbody>
-              <tr><th>0.28 m</th><td class="ok">안전<br>107.0 mm</td><td class="fail">역기구학 실패</td><td class="fail">역기구학 실패</td></tr>
-              <tr><th>0.22 m</th><td class="ok">안전<br>80.1 mm</td><td class="ok"><strong>선택됨</strong><br>70.9 mm</td><td class="fail">역기구학 실패</td></tr>
-              <tr><th>0.16 m</th><td class="cross-fail">교차 관계 실패</td><td class="cross-fail">교차 관계 실패</td><td class="fail">역기구학 실패</td></tr>
+              <tr>
+                <th>0.28 m</th>
+                <td class="ok"><strong>안전 후보</strong>IK 오차 2.67 mm<small>실제 높이 차 92.48 / 98.11 mm<br>경로 최소거리 106.95 mm<br>높이 여유는 가장 크지만 동작 모양이 기준보다 과하게 벌어짐</small></td>
+                <td class="fail"><strong>역기구학 실패</strong>IK 오차 6.52 mm<small>40 mm 높이 기준은 충분하지만 위치 오차가 5 mm를 1.52 mm 초과</small></td>
+                <td class="fail"><strong>역기구학 실패</strong>IK 오차 21.44 mm<small>가장 깊은 교차와 가장 큰 높이 차를 동시에 요구해 현재 관절 제한에서 도달하지 못함</small></td>
+              </tr>
+              <tr>
+                <th>0.22 m</th>
+                <td class="ok"><strong>안전 후보</strong>IK 오차 2.50 mm<small>실제 높이 차 70.19 / 70.73 mm<br>경로 최소거리 80.15 mm<br>모든 기준 통과</small></td>
+                <td class="ok"><strong>안전 후보 · 최종 선택</strong>IK 오차 4.94 mm<small>실제 높이 차 67.36 / 67.51 mm<br>100 Hz 경로 최소거리 70.94 mm<br>승인된 기준 모양과 가장 가까움</small></td>
+                <td class="fail"><strong>역기구학 실패</strong>IK 오차 15.71 mm<small>높이 관계는 충분하지만 깊이 0.17 m 목표를 5 mm 안에서 맞추지 못함</small></td>
+              </tr>
+              <tr>
+                <th>0.16 m</th>
+                <td class="cross-fail"><strong>교차 관계 실패</strong>IK 오차 2.64 mm<small>실제 높이 차 37.23 / 37.69 mm<br>위치·관절·정지 비관통은 통과했지만 40 mm 기준 미달</small></td>
+                <td class="cross-fail"><strong>교차 관계 실패</strong>IK 오차 4.55 mm<small>실제 높이 차 37.17 / 37.63 mm<br>손 목표는 맞췄지만 교차 표면의 위아래 구분이 부족</small></td>
+                <td class="fail"><strong>역기구학 실패</strong>IK 오차 13.28 mm<small>위치 오차가 먼저 실패했고 실제 높이 차도 약 35 mm로 부족</small></td>
+              </tr>
             </tbody>
           </table>
+        </div>
+        <h3>3×3표에서 읽을 수 있는 경향</h3>
+        <div class="grid three">
+          <div class="callout">
+            <strong>교차 깊이 0.11 m</strong><br>
+            세 높이 모두 역기구학은 가능했습니다. 높이 차 0.16 m에서는 실제 교차 표면 간격이 40 mm에 못 미쳤고, 0.22 m와 0.28 m에서는 안전 후보가 됐습니다. <strong>도달성은 가장 좋았지만 X자 교차가 비교적 얕습니다.</strong>
+          </div>
+          <div class="callout">
+            <strong>교차 깊이 0.14 m</strong><br>
+            높이 차 0.16 m는 위아래 구분 부족, 0.22 m는 모든 조건 통과, 0.28 m는 IK 오차 6.52 mm로 실패했습니다. <strong>0.22 m 부근에서만 동작 모양과 도달성의 균형이 맞았습니다.</strong>
+          </div>
+          <div class="callout danger">
+            <strong>교차 깊이 0.17 m</strong><br>
+            높이 차와 관계없이 세 조합이 모두 역기구학에 실패했습니다. 깊은 교차 때문에 어깨 관절이 허용 여유 경계에 도달해 <strong>현재 조건에서는 0.17 m가 도달성 한계를 넘는 영역</strong>으로 나타났습니다.
+          </div>
+        </div>
+        <div class="grid three">
+          <div class="callout warn">
+            <strong>높이 차 0.16 m</strong><br>
+            안전 후보가 하나도 없었습니다. 얕고 중간 깊이에서는 실제 표면 높이 차가 약 37 mm에 머물렀고, 깊이 0.17 m에서는 IK까지 실패했습니다. <strong>명확한 위아래 교차를 만들기에는 부족한 영역</strong>입니다.
+          </div>
+          <div class="callout">
+            <strong>높이 차 0.22 m</strong><br>
+            깊이 0.11 m와 0.14 m에서 모두 안전 후보가 나왔습니다. 실제 표면 높이 차도 약 67~71 mm였습니다. <strong>이번 격자에서 가장 안정적으로 성공한 높이 범위</strong>입니다.
+          </div>
+          <div class="callout warn">
+            <strong>높이 차 0.28 m</strong><br>
+            깊이 0.11 m에서는 가장 큰 거리 여유를 얻었지만 0.14 m부터 IK가 실패했습니다. <strong>충돌 여유는 커지지만 교차 깊이와 함께 커지면 도달성이 급격히 나빠지는 영역</strong>입니다.
+          </div>
+        </div>
+        <div class="callout">
+          <strong>종합 해석:</strong> 이번 3×3 범위에서는 교차 깊이 약 0.11~0.14 m와 높이 차 약 0.22 m 조합이 가장 잘 작동했습니다. 0.16 m 높이 차는 실제 교차 표면의 위아래 구분이 부족했고, 0.17 m 교차 깊이는 모든 높이에서 역기구학 정확도 기준을 넘었습니다. 0.28 m 높이 차는 얕은 교차에서는 안전 여유가 컸지만 중간 이상 깊이에서는 관절 도달성이 떨어졌습니다. 따라서 <strong>0.14 m / 0.22 m</strong>가 동작 모양, 위치 정확도, 관절 여유와 전 경로 비관통을 함께 만족한 균형점이었습니다.
         </div>
         <h3>각 조합은 무엇 때문에 통과하거나 실패했나?</h3>
         <div class="table-wrap">
