@@ -1,31 +1,63 @@
-# Task 2 — Alternating X-Cross
+# 작업 2 — 양팔 번갈아 X자 교차
 
-Easy-to-read final HTML report: `task2_final_report.html`
+[한국어 최종 HTML 보고서 열기](https://yunalee-dev.github.io/agibot-x2-task2-report/)
 
-Current scope: phases A–I are implemented and numerically verified under a provisional MuJoCo collision-analysis profile. The final animation remains available for user visual sign-off.
+이 폴더에는 AgiBot X2 Ultra v1.3.0의 양팔을 번갈아 X자로 교차시키는 작업을 만들고, 전 경로의 관절 범위와 자기충돌을 검사한 결과가 들어 있습니다. A단계부터 I단계까지 구현과 수치 검증을 완료했으며, 최종 애니메이션도 함께 제공합니다.
 
-## Status
+## 핵심 결과
 
-- Phase A: **PASS** — model and 37 referenced meshes load; 7 scalar joints per arm; geometry and coordinate evidence recorded
-- Phase B: **PASS** — common `qpos0` reference, 14-arm-only mutation guard, provisional pair sets, and signed-distance semantics verified
-- Phase C: **PASS / USER ACCEPTED** — max wrist-origin error 0.003671 m, no provisional-scope penetration
-- Phase D: **PASS / USER ACCEPTED** — both mesh-derived hand points cross the centerline; left distal link is 0.062427 m above at the closest points
-- Phase E: **PASS / USER ACCEPTED** — both hands cross the centerline; right distal link is 0.061796 m above at the closest points
-- Phase F: **PASS / USER ACCEPTED** — 1,701 samples across two repeats; no joint-limit violation or penetration
-- Phase G1: **PASS / USER ACCEPTED AS PROVISIONAL G2 INPUT**
-- Phase G2 / original Task G: **PASS_TASK_LOCAL_PROVISIONAL_POLICY**
-- Phase H: **PASS** — 9 parameter combinations, 3 full-path safe candidates, selected d140_v220
-- Phase I: **PASS_KINEMATIC_FINAL / VISUAL REVIEW AVAILABLE** — 5 repeats and 4,251 checked samples
-- Tests: **31/31 passed**
-- Source model: `agibot_x2_urdf/X2_URDF-v1.3.0/x2_ultra.xml` (never modified by these tools)
-- Audit configuration: `configs/task2/phase_ab.json` (`PROVISIONAL`; TBD-005/TBD-006 remain open)
-- Reference state: loaded `model.qpos0`, zero `qvel`; only the configured 14 arm qpos entries may change
-- Reference interpreter: `C:\Users\lyn04\anaconda3\python.exe`
-- Verified environment: Python 3.13.5, NumPy 2.1.3, MuJoCo 3.14.0
+- 최종 상태: 운동학적 검증 통과
+- 최종 반복: 5회
+- 검사한 프레임: 4,251개
+- 팔↔팔 최소거리: 0.070935214 m
+- 관통: 0회
+- 관절 한계 위반: 0회
+- 자동 테스트: 31개 중 31개 통과
+- 선택한 파라미터: `d140_v220`(교차 깊이 0.14 m, 높이 차 0.22 m)
+- 공식 모델: `agibot_x2_urdf/X2_URDF-v1.3.0/x2_ultra.xml`
+- 검사 설정: `configs/task2/phase_ab.json`
 
-## Run
+공식 MJCF·URDF·메시 파일은 수정하지 않았습니다. 기준 자세는 모델의 `qpos0`를 사용하고 속도는 0으로 두었으며, 설정에 포함된 양팔 14개 관절 위치만 변경했습니다.
 
-From the repository root in PowerShell:
+## 단계별 완료 내용
+
+| 단계 | 결과 | 수행 내용 |
+|---|---|---|
+| A | 통과 | 모델, 관절, 몸체, 충돌 형상, 메시와 좌표계 확인 |
+| B | 통과 | 공통 기준 자세, 양팔 14개 관절 변경 제한, 부호 있는 거리의 의미 확인 |
+| C | 통과·사용자 승인 | 양팔을 벌린 시작·복귀 자세 생성 |
+| D | 통과·사용자 승인 | 왼팔이 위인 X자 교차 자세 생성 및 최근접 표면 관계 확인 |
+| E | 통과·사용자 승인 | 오른팔이 위인 X자 교차 자세 생성 및 최근접 표면 관계 확인 |
+| F | 통과·사용자 승인 | 2회 반복, 1,701개 프레임의 연속 궤적 검사 |
+| G1 | 임시 보정 완료 | 충돌 거리 분포와 검토 대상 형상 쌍 산출 |
+| G2 | 작업 범위 내 임시 정책 통과 | 안전·근접·충돌·회복 데이터를 용도별로 분리 |
+| H | 통과 | 9개 파라미터 조합을 비교하고 `d140_v220` 선택 |
+| I | 최종 운동학 검증 통과 | 5회 반복, 4,251개 프레임 최종 검사 |
+
+## 동작 순서
+
+한 동작 묶음은 다음 순서로 구성됩니다.
+
+`펼친 자세 → 왼팔 위 교차 → 펼친 자세 → 오른팔 위 교차 → 펼친 자세`
+
+최소 저크 보간을 사용해 각 자세 사이를 연결하고, 100 Hz로 모든 중간 프레임을 검사했습니다.
+
+## 충돌 데이터와 ACT 데이터의 분리
+
+충돌 상태가 ACT의 정답 행동으로 들어가지 않도록 데이터를 다음처럼 분리했습니다.
+
+- 안전 상태: 관통이 없고 팔↔팔 거리가 작업 2 임시 기준 20 mm 이상
+- 근접 상태: 관통은 없지만 팔↔팔 거리가 20 mm 미만
+- 충돌 상태: 검사 범위의 부호 있는 거리 중 하나라도 0보다 작음
+- 회복 시연: 근접 상태에서 승인된 안전 자세로 빠져나오는 검증된 궤적
+
+분류 결과는 안전 977개, 근접 45개, 충돌 89개입니다. 충돌 89개는 판별기 학습이나 평가를 위한 부정 표본이며 ACT 행동 정답에는 사용하지 않습니다. 행동 학습에는 승인된 안전 시연과 전 경로를 다시 검사한 회복 시연만 사용합니다.
+
+프로젝트 전체의 충돌 형상, 형상 쌍 집합과 양수 안전 임계값은 아직 `TBD-005`, `TBD-006`, `TBD-009` 상태입니다. 여기서 사용한 20 mm 기준은 작업 2 분석용 임시 값이며 공식 안전 기준이 아닙니다.
+
+## 실행 방법
+
+저장소 루트에서 PowerShell로 다음 명령을 실행합니다.
 
 ```powershell
 & 'C:\Users\lyn04\anaconda3\python.exe' -m scripts.task2.audit_phase_ab
@@ -37,130 +69,68 @@ From the repository root in PowerShell:
 & 'C:\Users\lyn04\anaconda3\python.exe' -m scripts.task2.run_phase_g2
 & 'C:\Users\lyn04\anaconda3\python.exe' -m scripts.task2.run_phase_h
 & 'C:\Users\lyn04\anaconda3\python.exe' -m scripts.task2.run_phase_i
-& 'C:\Users\lyn04\anaconda3\python.exe' -m unittest tests.test_task2_phase_ab -v
 & 'C:\Users\lyn04\anaconda3\python.exe' -m unittest discover -s tests -v
 ```
 
-The audit command regenerates only Task 2 phase A/B derived artifacts in this directory. It does not edit the official MJCF, URDF, or mesh assets.
-
-## Outputs
-
-- `environment_report.md`: evidence, pass/fail status, geometry caveats, coordinates, and Phase C readiness
-- `joint_info.csv`: every loaded joint, model-derived addresses/types/limits, and Task 2 membership
-- `arm_geom_info.csv`: arm geom ID ↔ body ↔ mesh trace, masks, visual/collision role
-- `mesh_references.csv`: only paths actually referenced by the selected MJCF
-- `distance_api_probe.csv`: installed API sign/cutoff/filter experiment
-- `baseline_distances.csv`: baseline pair distances for provisional Task 2 scopes
-- `baseline_validation.json`: machine-readable fixed-state, geom-set, coordinate, and minimum-distance summary
-- `phase_c_report.md`: OPEN target, achieved wrist positions, pass/fail evidence, and interpretation limits
-- `open_pose.csv`: OPEN pose 14-joint values and model-derived limit margins
-- `open_validation.json`: machine-readable IK attempts and static validation
-- `open_distances.csv`: all provisional pair distances at OPEN
-- `open_front.png`, `open_side.png`: user visual-approval renders
-- `phase_d_report.md`: LEFT_OVER_RIGHT targets, closest-link over/under evidence, and static validation
-- `left_over_right_pose.csv`: LEFT_OVER_RIGHT 14-joint values and limit margins
-- `left_over_right_validation.json`: mesh-derived hand points, IK attempts, and closest-point relation
-- `left_over_right_distances.csv`: all provisional pair distances at LEFT_OVER_RIGHT
-- `left_over_right_front.png`, `left_over_right_side.png`: Phase D visual-approval renders
-- `phase_e_report.md`: RIGHT_OVER_LEFT targets, closest-link over/under evidence, and static validation
-- `right_over_left_pose.csv`: RIGHT_OVER_LEFT 14-joint values and limit margins
-- `right_over_left_validation.json`: mesh-derived hand points, IK attempts, and closest-point relation
-- `right_over_left_distances.csv`: all provisional pair distances at RIGHT_OVER_LEFT
-- `right_over_left_front.png`, `right_over_left_side.png`: Phase E visual-approval renders
-
-## Phase C implementation dependencies
-
-The existing SciPy 1.15.3 installation is used for bounded nonlinear least-squares IK; a custom damped least-squares implementation was the alternative. Existing Pillow 11.1.0 is used only to save and label PNG renders. No dependency was installed or added to the system.
-
-## Interpretation boundary
-
-The current arm collision geoms mostly reuse the detailed visual STL meshes, and wrist-yaw collision geoms are absent/commented. MuJoCo's mesh collision representation is therefore useful for model-relative screening, but these numbers are not certified physical clearances or exact raw STL triangle distances. Any later geometry/pair-set change requires Silver Robotics reprocessing under `docs/07_AGENT_RULES.md`.
-
-Before making safety-grade clearance claims, the recommended follow-up is a separate, versioned analysis MJCF containing arm-link capsule/compound-convex proxies and the missing wrist-yaw surfaces, with proxy error checked against the source meshes. The official v1.3.0 model should remain unchanged.
-
-## Completed gate history
-
-Phase H selected d140_v220 and Phase I completed the final repeated kinematic validation.
-## Phase F — continuous trajectory
-
-- Status: `PASS / USER ACCEPTED`
-- Sequence: `OPEN → LEFT_OVER_RIGHT → OPEN → RIGHT_OVER_LEFT → OPEN`
-- Sampling: 100 Hz; 1.5 s minimum-jerk transitions; 0.5 s holds; 2 repeats
-- Validation: 1,701/1,701 samples within joint limits and without penetration
-- Animation: `task2_episode.gif` (640×480, 25 fps, one 8.5 s episode)
-
-Generate and validate:
+최종 궤적을 MuJoCo 뷰어에서 반복 재생하려면 다음 명령을 사용합니다.
 
 ```powershell
-python -m scripts.task2.run_phase_f
+& 'C:\Users\lyn04\anaconda3\python.exe' -m scripts.task2.play_trajectory --trajectory results/task2/final_trajectory.csv --repeats 1 --loop
 ```
 
-Interactive MuJoCo playback:
+## 주요 결과 파일
 
-```powershell
-python -m scripts.task2.play_trajectory --repeats 2 --loop
-```
+### 최종 보고서와 시각 자료
 
-Phase F outputs: `trajectory.csv`, `trajectory_validation.csv`,
-`trajectory_summary.json`, `phase_f_report.md`, and `task2_episode.gif`.
-The user accepted the animation before Phase G.
+- `task2_final_report.html`: 한국어 최종 보고서
+- `task2_final.gif`: 최종 동작 애니메이션
+- `open_front.png`, `open_side.png`: 펼친 자세의 정면·측면 이미지
+- `phase_h_selected_left_over_right_front.png`, `phase_h_selected_left_over_right_side.png`: 왼팔 위 교차 자세
+- `phase_h_selected_right_over_left_front.png`, `phase_h_selected_right_over_left_side.png`: 오른팔 위 교차 자세
+- `g2_arm_arm_distance.png`: 한 동작의 팔 사이 최소거리 그래프
+- `phase_h_status_heatmap.png`: H단계 조합별 검사 상태
+- `phase_h_clearance_heatmap.png`: H단계 조합별 팔 사이 최소거리
 
-## Phase G1 — provisional collision calibration
+### 최종 수치 데이터
 
-- Status: `PROVISIONAL_CALIBRATION_COMPLETE_VISUAL_REVIEW_REQUIRED`
-- 1,111 deterministic calibration poses: 171 accepted-trajectory samples and 940 synthetic probes
-- 89 penetrating probes retained as negative/evaluation evidence, never ACT action targets
-- 478 raw geometry pairs evaluated; 53 pairs entered the provisional under-100-mm review shortlist
-- TBD-006 (pair set) and TBD-009 (threshold) remain open pending review
+- `final_trajectory.csv`: 최종 5회 반복 관절 궤적
+- `final_distance_records.csv`: 최종 전 프레임 거리 기록
+- `final_episode_summary.csv`: 반복별 요약
+- `final_manifest.json`: 생성물과 검증 결과 목록
+- `task2_field_contract.md`: 최종 데이터 필드 정의
 
-Run:
+### 데이터 분리 결과
 
-```powershell
-python -m scripts.task2.run_phase_g1
-```
+- `g2_labeled_states.csv`: 안전·근접·충돌 라벨 상태
+- `g2_negative_collision_states.csv`: 충돌 부정·평가 데이터
+- `g2_safe_demonstration.csv`: 안전 시연
+- `g2_recovery_demonstrations.csv`: 회복 시연
+- `g2_recovery_manifest.csv`: 회복 시연 목록
 
-Phase G1 outputs: `g1_pairwise_distances.csv.gz`, `g1_sample_minima.csv`,
-`g1_pair_statistics.csv`, `g1_pair_review_tiers.csv`,
-`g1_threshold_scenarios.csv`, `g1_calibration_summary.json`, and
-`phase_g1_report.md`.
+### 파라미터 탐색 결과
 
-## Phase G2 — separated states, recovery, and full-path Task G analysis
+- `phase_h_sweep.csv`: 9개 파라미터 조합의 전체 결과
+- `phase_h_selected.json`: 최종 선택 근거와 수치
+- `phase_h_report.md`: H단계 상세 보고서
 
-- Working profile: COLLISION if any provisional-scope distance is below 0 m; otherwise NEAR if arm↔arm is below 0.020 m; otherwise SAFE
-- Labeled probes: 977 SAFE, 45 NEAR, 89 COLLISION
-- 89 COLLISION states are negative/evaluation-only and never ACT action targets
-- 11 recovery episodes, 561 rows, and zero penetration
-- Accepted Task 2 episode: 851 samples across nine contiguous segments
-- Episode arm↔arm minimum: 0.073224888 m at 2.950 s
-- Closest pair: `left_elbow_link ↔ right_wrist_roll_link`
-- TBD-006 and TBD-009 remain project-wide OPEN
+## 실행 환경
 
-Outputs: `g2_labeled_states.csv`, `g2_negative_collision_states.csv`,
-`g2_safe_demonstration.csv`, `g2_recovery_demonstrations.csv`,
-`g2_recovery_manifest.csv`, `g2_task_g_timestep_analysis.csv`,
-`g2_task_g_segment_summary.csv`, `g2_task_g_worst_pose.csv`,
-`g2_arm_arm_distance.png`, `g2_worst_arm_arm_frame.png`,
-`g2_dataset_summary.json`, and `phase_g2_report.md`.
+- Python 3.13.5
+- NumPy 2.1.3
+- MuJoCo 3.14.0
+- SciPy 1.15.3: 제한이 있는 비선형 최소제곱 역기구학에 사용
+- Pillow 11.1.0: PNG와 GIF 저장 및 표시 문구 작성에 사용
 
-Synthetic SAFE/NEAR probes are context/evaluation states, not demonstrations.
-Only the accepted trajectory and fully revalidated recovery paths carry next-q
-action targets.
+이 작업을 위해 새 의존성을 설치하지 않았습니다.
 
-## Phase H — parameter exploration
+## 해석할 때 주의할 점
 
-- Grid: cross depth 0.11/0.14/0.17 m × vertical separation 0.16/0.22/0.28 m
-- Results: 3 SAFE_CANDIDATE, 2 CROSS_RELATION_FAIL, 4 IK_FAIL
-- Selected: d140_v220, preserving the approved visual shape
-- Selected 100 Hz arm↔arm minimum: 0.070935214 m
-- Outputs: phase_h_sweep.csv, both heatmaps, selected pose files/renders, phase_h_selected.json, and phase_h_report.md
+이번 결과는 현재 MuJoCo 모델과 임시 검사 범위 안에서 관통이 발견되지 않았다는 뜻입니다. 실제 하드웨어의 안전을 인증한 결과는 아닙니다.
 
-## Phase I — final demonstration
+- `qpos`를 직접 입력하고 `mj_forward`를 수행한 운동학적 검사입니다.
+- 모터 토크, 추종 오차, 균형, 관성, 케이블과 외피 변형은 검증하지 않았습니다.
+- 현재 팔 충돌 형상은 주로 상세 시각 메시를 재사용합니다.
+- 원본 모델에는 손목 요 회전축의 충돌 표면이 빠져 있습니다.
+- 전체 최소거리 약 5.65 mm는 팔끼리가 아니라 어깨 회전부와 몸통 사이의 설계상 가까운 간격입니다.
 
-- Five explicit repeats at 100 Hz; 4,251 checked samples over 42.5 s
-- Penetrations: 0; joint-limit violations: 0
-- Arm↔arm minimum: 0.070935214 m in every repeat
-- Global minimum: 0.005653412 m at left_shoulder_roll_link ↔ torso_link
-- Outputs: final_trajectory.csv, final_distance_records.csv, final_episode_summary.csv, task2_final.gif, final_manifest.json, phase_i_report.md, and task2_field_contract.md
-
-All requested phases are implemented. The remaining non-code gate is user visual review of task2_final.gif. Project-wide collision geometry, pair set, and positive threshold remain TBD-005/006/009.
-
+물리적 안전거리를 주장하려면 공식 v1.3.0 모델을 그대로 보존한 채, 별도 버전의 분석용 MJCF에 팔 링크의 캡슐 또는 복합 볼록 대리 형상과 누락된 손목 표면을 추가하고 원본 메시와의 오차를 검증해야 합니다. 충돌 형상이나 형상 쌍 집합을 바꾸면 `docs/07_AGENT_RULES.md`에 따라 Silver Robotics 이후 계층을 다시 처리해야 합니다.

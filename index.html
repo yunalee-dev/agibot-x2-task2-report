@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AgiBot X2 Ultra Task 2 최종 보고서</title>
+  <title>AgiBot X2 Ultra 작업 2 최종 보고서</title>
   <style>
     :root {
       --bg: #f3f6fb;
@@ -234,8 +234,8 @@
   <div class="layout">
     <aside class="sidebar">
       <div class="brand">
-        <div class="eyebrow">Final technical report</div>
-        <h1>AgiBot X2 Ultra<br>Task 2</h1>
+        <div class="eyebrow">최종 기술 보고서</div>
+        <h1>AgiBot X2 Ultra<br>작업 2</h1>
         <p>양팔 번갈아 X자로 교차하기</p>
       </div>
       <div class="toc-title">목차</div>
@@ -263,18 +263,18 @@
     <main>
       <header class="hero">
         <div>
-          <p class="kicker">AgiBot X2 Ultra · Self-Collision Study</p>
+          <p class="kicker">AgiBot X2 Ultra · 자기충돌 분석</p>
           <h2>양팔을 번갈아<br>X자로 교차하기</h2>
           <p>로봇 모델을 확인하고, 세 가지 핵심 자세를 만든 뒤, 모든 중간 프레임에서 관절 범위와 자기충돌을 검사했습니다. 충돌 데이터는 ACT의 정답 행동과 분리해 저장했습니다.</p>
           <div class="hero-badges">
-            <span>Phases A–I 완료</span>
+            <span>A–I 단계 완료</span>
             <span>31/31 테스트 통과</span>
             <span>4,251 최종 프레임 검사</span>
             <span>관통 0회</span>
           </div>
         </div>
         <div class="hero-robot">
-          <img src="open_front.png" alt="AgiBot X2 Ultra OPEN 자세 정면">
+          <img src="open_front.png" alt="AgiBot X2 Ultra 펼친 자세 정면">
         </div>
       </header>
 
@@ -298,8 +298,8 @@
         <div class="grid four">
           <div class="metric"><div class="label">자세 좌표 수</div><div class="value">nq 38</div></div>
           <div class="metric"><div class="label">속도 좌표 수</div><div class="value">nv 37</div></div>
-          <div class="metric"><div class="label">Body / Geom</div><div class="value">33 / 84</div></div>
-          <div class="metric"><div class="label">참조 Mesh</div><div class="value">37</div></div>
+          <div class="metric"><div class="label">몸체 / 충돌 형상</div><div class="value">33 / 84</div></div>
+          <div class="metric"><div class="label">참조 메시</div><div class="value">37</div></div>
         </div>
         <div class="grid two" style="margin-top:16px">
           <div>
@@ -307,20 +307,20 @@
             <ul>
               <li>왼팔 7개 관절</li>
               <li>오른팔 7개 관절</li>
-              <li>총 14 DoF만 변경</li>
+              <li>총 14자유도만 변경</li>
             </ul>
           </div>
           <div>
             <h3>고정한 부분</h3>
             <ul>
-              <li>floating base</li>
+              <li>이동식 기준 몸체</li>
               <li>다리, 허리, 머리</li>
               <li>모델의 기준 자세 qpos0 유지</li>
             </ul>
           </div>
         </div>
         <div class="callout warn">
-          모델에는 별도 손·그리퍼 body가 없어서 손의 대표점은 wrist-roll 충돌 mesh에서 몸체 원점으로부터 가장 먼 꼭짓점을 자동으로 골라 사용했습니다.
+          모델에는 별도 손·그리퍼 몸체가 없어서 손의 대표점은 손목 회전 충돌 메시에서 몸체 원점으로부터 가장 먼 꼭짓점을 자동으로 골라 사용했습니다.
         </div>
         <details>
           <summary>모델 파일과 실행 환경</summary>
@@ -334,47 +334,47 @@
 
       <section id="goal">
         <h2>3. 목표 동작</h2>
-        <p class="lead">한 episode는 아래 순서이며, 왼손과 오른손이 실제로 몸 중심선을 넘어가도록 했습니다.</p>
+        <p class="lead">한 동작 묶음은 아래 순서이며, 왼손과 오른손이 실제로 몸 중심선을 넘어가도록 했습니다.</p>
         <div class="flow" aria-label="동작 순서">
-          <span class="node">OPEN</span><span class="arrow">→</span>
-          <span class="node">LEFT OVER RIGHT</span><span class="arrow">→</span>
-          <span class="node">OPEN</span><span class="arrow">→</span>
-          <span class="node">RIGHT OVER LEFT</span><span class="arrow">→</span>
-          <span class="node">OPEN</span>
+          <span class="node">펼친 자세</span><span class="arrow">→</span>
+          <span class="node">왼팔 위 교차</span><span class="arrow">→</span>
+          <span class="node">펼친 자세</span><span class="arrow">→</span>
+          <span class="node">오른팔 위 교차</span><span class="arrow">→</span>
+          <span class="node">펼친 자세</span>
         </div>
-        <p>손끝 높이만 바꾼 것이 아닙니다. 교차 부근에서 실제 팔 collision geometry의 최근접 지점을 찾아 어느 팔이 위에 있는지 확인했습니다.</p>
+        <p>손끝 높이만 바꾼 것이 아닙니다. 교차 부근에서 실제 팔 충돌 형상의 최근접 지점을 찾아 어느 팔이 위에 있는지 확인했습니다.</p>
       </section>
 
       <section id="work">
         <h2>4. 무엇을 했나</h2>
         <p class="lead">A부터 I까지 모델 확인, 자세 생성, 전 경로 분석, 데이터 분리, 파라미터 탐색, 최종 반복 검증 순서로 진행했습니다.</p>
         <div class="phase-grid">
-          <div class="phase"><strong><span class="dot"></span>A · 모델 감사</strong><small>관절, body, geom, mesh, 좌표계를 실제 모델에서 추출</small></div>
-          <div class="phase"><strong><span class="dot"></span>B · 측정 기준</strong><small>양팔만 움직이는 공통 로더와 signed distance 의미 확인</small></div>
-          <div class="phase"><strong><span class="dot"></span>C · OPEN</strong><small>양팔을 벌린 시작·복귀 자세를 IK로 생성</small></div>
+          <div class="phase"><strong><span class="dot"></span>A · 모델 점검</strong><small>관절, 몸체, 충돌 형상, 메시, 좌표계를 실제 모델에서 추출</small></div>
+          <div class="phase"><strong><span class="dot"></span>B · 측정 기준</strong><small>양팔만 움직이는 공통 로더와 부호 있는 거리의 의미 확인</small></div>
+          <div class="phase"><strong><span class="dot"></span>C · 펼친 자세</strong><small>양팔을 벌린 시작·복귀 자세를 역기구학으로 생성</small></div>
           <div class="phase"><strong><span class="dot"></span>D · 왼팔 위</strong><small>최근접 표면에서 왼팔이 위인지 검증</small></div>
           <div class="phase"><strong><span class="dot"></span>E · 오른팔 위</strong><small>반대 방향도 독립적으로 다시 계산</small></div>
-          <div class="phase"><strong><span class="dot"></span>F · 연속 궤적</strong><small>minimum-jerk 보간, 100 Hz 전 프레임 검사</small></div>
-          <div class="phase"><strong><span class="dot"></span>G · 충돌 분석</strong><small>거리 분포와 위험 pair, SAFE/NEAR/COLLISION/RECOVERY 분리</small></div>
-          <div class="phase"><strong><span class="dot"></span>H · 파라미터 탐색</strong><small>cross depth × vertical separation 2D sweep</small></div>
+          <div class="phase"><strong><span class="dot"></span>F · 연속 궤적</strong><small>최소 저크 보간, 100 Hz 전 프레임 검사</small></div>
+          <div class="phase"><strong><span class="dot"></span>G · 충돌 분석</strong><small>거리 분포와 위험 형상 쌍, 안전·근접·충돌·회복 데이터 분리</small></div>
+          <div class="phase"><strong><span class="dot"></span>H · 파라미터 탐색</strong><small>교차 깊이와 높이 차의 2차원 조합 탐색</small></div>
           <div class="phase"><strong><span class="dot"></span>I · 최종 시연</strong><small>선택값으로 5회 반복, 4,251프레임 최종 검사</small></div>
         </div>
       </section>
 
       <section id="poses">
         <h2>5. 핵심 자세 결과</h2>
-        <p class="lead">아래 이미지는 최종 Phase H에서 선택한 자세입니다. 정면과 측면을 함께 확인할 수 있습니다.</p>
-        <h3>OPEN</h3>
+        <p class="lead">아래 이미지는 최종 H단계에서 선택한 자세입니다. 정면과 측면을 함께 확인할 수 있습니다.</p>
+        <h3>펼친 자세</h3>
         <div class="gallery">
-          <figure><img src="open_front.png" alt="OPEN 정면"><figcaption>정면: 양팔이 몸 앞에서 벌어져 있음</figcaption></figure>
-          <figure><img src="open_side.png" alt="OPEN 측면"><figcaption>측면: 손이 몸 앞쪽에 위치함</figcaption></figure>
+          <figure><img src="open_front.png" alt="펼친 자세 정면"><figcaption>정면: 양팔이 몸 앞에서 벌어져 있음</figcaption></figure>
+          <figure><img src="open_side.png" alt="펼친 자세 측면"><figcaption>측면: 손이 몸 앞쪽에 위치함</figcaption></figure>
         </div>
-        <h3>LEFT OVER RIGHT</h3>
+        <h3>왼팔 위 교차</h3>
         <div class="gallery">
           <figure><img src="phase_h_selected_left_over_right_front.png" alt="왼팔 위 교차 정면"><figcaption>정면: 왼팔이 위인 X자 교차</figcaption></figure>
           <figure><img src="phase_h_selected_left_over_right_side.png" alt="왼팔 위 교차 측면"><figcaption>측면: 교차 지점의 실제 앞뒤·높이 관계</figcaption></figure>
         </div>
-        <h3>RIGHT OVER LEFT</h3>
+        <h3>오른팔 위 교차</h3>
         <div class="gallery">
           <figure><img src="phase_h_selected_right_over_left_front.png" alt="오른팔 위 교차 정면"><figcaption>정면: 오른팔이 위인 X자 교차</figcaption></figure>
           <figure><img src="phase_h_selected_right_over_left_side.png" alt="오른팔 위 교차 측면"><figcaption>측면: 반대 방향도 독립적으로 검증</figcaption></figure>
@@ -387,7 +387,7 @@
 
       <section id="collision">
         <h2>6. 자기충돌을 어떻게 계산했나</h2>
-        <p class="lead">각 자세에서 모든 검사 대상 geometry 쌍의 signed distance를 계산했습니다.</p>
+        <p class="lead">각 자세에서 모든 검사 대상 충돌 형상 쌍의 부호 있는 거리를 계산했습니다.</p>
         <div class="distance-rule">
           <div class="safe"><strong>거리 &gt; 0</strong><br>서로 떨어져 있음</div>
           <div class="touch"><strong>거리 = 0</strong><br>표면이 맞닿음</div>
@@ -401,7 +401,7 @@
           그래프의 보라색 점이 기존 승인 궤적에서 가장 가까운 순간입니다. 최종 H/I 선택에서는 팔↔팔 최소거리가 약 70.94 mm였습니다.
         </div>
         <div class="callout warn">
-          전체 최소거리 약 5.65 mm는 팔끼리의 거리가 아니라 shoulder-roll ↔ torso의 설계상 항상 가까운 간격입니다. 그래서 이 pair를 그대로 global threshold에 넣으면 거의 모든 자세가 위험으로 오분류됩니다.
+          전체 최소거리 약 5.65 mm는 팔끼리의 거리가 아니라 어깨 회전부와 몸통 사이의 설계상 항상 가까운 간격입니다. 그래서 이 형상 쌍을 그대로 전체 임계값에 넣으면 거의 모든 자세가 위험으로 잘못 분류됩니다.
         </div>
       </section>
 
@@ -409,72 +409,72 @@
         <h2>7. 데이터를 어떻게 나눴나</h2>
         <p class="lead">ACT가 충돌 자세를 정답 행동으로 모방하지 않도록 데이터의 용도를 명확히 분리했습니다.</p>
         <div class="stacked-bar" aria-label="G2 상태 분포">
-          <span class="bar-safe" style="width:87.94%">SAFE 977</span>
+          <span class="bar-safe" style="width:87.94%">안전 977</span>
           <span class="bar-near" style="width:4.05%"></span>
           <span class="bar-collision" style="width:8.01%">89</span>
         </div>
         <div class="legend">
-          <span><i class="bar-safe"></i>SAFE 977</span>
-          <span><i class="bar-near"></i>NEAR 45</span>
-          <span><i class="bar-collision"></i>COLLISION 89</span>
+          <span><i class="bar-safe"></i>안전 977</span>
+          <span><i class="bar-near"></i>근접 45</span>
+          <span><i class="bar-collision"></i>충돌 89</span>
         </div>
         <div class="grid three" style="margin-top:18px">
-          <div class="metric"><div class="label">안전 시연</div><div class="value">851 rows</div><div class="context">정상 Task 2 동작</div></div>
-          <div class="metric"><div class="label">Recovery</div><div class="value">11 episodes</div><div class="context">561 rows · 관통 0</div></div>
-          <div class="metric"><div class="label">충돌 정답 유입</div><div class="value status-pass">0 rows</div><div class="context">negative/evaluation 전용</div></div>
+          <div class="metric"><div class="label">안전 시연</div><div class="value">851행</div><div class="context">정상 작업 2 동작</div></div>
+          <div class="metric"><div class="label">회복 시연</div><div class="value">11개 동작</div><div class="context">561행 · 관통 0</div></div>
+          <div class="metric"><div class="label">충돌 정답 유입</div><div class="value status-pass">0행</div><div class="context">부정·평가 데이터 전용</div></div>
         </div>
         <h3>분류 규칙</h3>
         <ul>
-          <li><strong>COLLISION:</strong> 검사 범위 중 하나라도 signed distance가 0보다 작음</li>
-          <li><strong>NEAR:</strong> 관통은 없지만 팔↔팔 거리가 Task 2 임시 기준 20 mm 미만</li>
-          <li><strong>SAFE:</strong> 관통이 없고 팔↔팔 거리가 20 mm 이상</li>
-          <li><strong>RECOVERY:</strong> NEAR 상태에서 승인된 안전 자세로 빠져나오는 검증된 궤적</li>
+          <li><strong>충돌:</strong> 검사 범위 중 하나라도 부호 있는 거리가 0보다 작음</li>
+          <li><strong>근접:</strong> 관통은 없지만 팔↔팔 거리가 작업 2 임시 기준 20 mm 미만</li>
+          <li><strong>안전:</strong> 관통이 없고 팔↔팔 거리가 20 mm 이상</li>
+          <li><strong>회복:</strong> 근접 상태에서 승인된 안전 자세로 빠져나오는 검증된 궤적</li>
         </ul>
         <div class="callout danger">
-          89개의 COLLISION 상태는 충돌 판별기나 평가용 negative sample입니다. ACT 행동 정답으로는 한 행도 사용하지 않습니다.
+          89개의 충돌 상태는 충돌 판별기나 평가용 부정 표본입니다. ACT 행동 정답으로는 한 행도 사용하지 않습니다.
         </div>
       </section>
 
       <section id="sweep">
-        <h2>8. Phase H 파라미터 탐색</h2>
+        <h2>8. H단계 파라미터 탐색</h2>
         <p class="lead">팔이 반대편으로 넘어가는 깊이와 위아래 간격을 3×3로 바꾸어 양쪽 교차 자세와 전체 경로를 다시 검사했습니다.</p>
         <div class="gallery">
-          <figure><img src="phase_h_status_heatmap.png" alt="Phase H 성공 실패 heatmap"><figcaption>초록색만 양방향 자세와 경로가 모두 통과한 조합</figcaption></figure>
-          <figure><img src="phase_h_clearance_heatmap.png" alt="Phase H 팔 사이 최소거리 heatmap"><figcaption>통과 조합의 20 Hz 경로 팔↔팔 최소거리</figcaption></figure>
+          <figure><img src="phase_h_status_heatmap.png" alt="H단계 성공 실패 색상표"><figcaption>초록색만 양방향 자세와 경로가 모두 통과한 조합</figcaption></figure>
+          <figure><img src="phase_h_clearance_heatmap.png" alt="H단계 팔 사이 최소거리 색상표"><figcaption>통과 조합의 20 Hz 경로 팔↔팔 최소거리</figcaption></figure>
         </div>
         <h3>9개 실험 결과</h3>
         <div class="table-wrap">
           <table class="heatmap-table">
-            <thead><tr><th>Vertical \ Depth</th><th>0.11 m</th><th>0.14 m</th><th>0.17 m</th></tr></thead>
+            <thead><tr><th>높이 차 \ 교차 깊이</th><th>0.11 m</th><th>0.14 m</th><th>0.17 m</th></tr></thead>
             <tbody>
-              <tr><th>0.28 m</th><td class="ok">SAFE<br>107.0 mm</td><td class="fail">IK FAIL</td><td class="fail">IK FAIL</td></tr>
-              <tr><th>0.22 m</th><td class="ok">SAFE<br>80.1 mm</td><td class="ok"><strong>SELECTED</strong><br>70.9 mm</td><td class="fail">IK FAIL</td></tr>
-              <tr><th>0.16 m</th><td class="cross-fail">교차 관계 실패</td><td class="cross-fail">교차 관계 실패</td><td class="fail">IK FAIL</td></tr>
+              <tr><th>0.28 m</th><td class="ok">안전<br>107.0 mm</td><td class="fail">역기구학 실패</td><td class="fail">역기구학 실패</td></tr>
+              <tr><th>0.22 m</th><td class="ok">안전<br>80.1 mm</td><td class="ok"><strong>선택됨</strong><br>70.9 mm</td><td class="fail">역기구학 실패</td></tr>
+              <tr><th>0.16 m</th><td class="cross-fail">교차 관계 실패</td><td class="cross-fail">교차 관계 실패</td><td class="fail">역기구학 실패</td></tr>
             </tbody>
           </table>
         </div>
         <div class="callout">
-          가장 큰 거리만 고르지 않았습니다. 이미 사용자가 승인한 동작 모양과 가장 가까우면서 전 경로가 안전한 <strong>depth 0.14 m / vertical 0.22 m</strong>를 선택했습니다.
+          가장 큰 거리만 고르지 않았습니다. 이미 사용자가 승인한 동작 모양과 가장 가까우면서 전 경로가 안전한 <strong>교차 깊이 0.14 m / 높이 차 0.22 m</strong>를 선택했습니다.
         </div>
       </section>
 
       <section id="final">
-        <h2>9. 최종 Task 2 시연</h2>
+        <h2>9. 최종 작업 2 시연</h2>
         <p class="lead">선택된 H 파라미터로 5회 반복을 만들고 100 Hz 전 프레임을 다시 검사했습니다.</p>
         <figure>
           <img src="task2_final.gif" alt="최종 Task 2 애니메이션">
-          <figcaption>최종 episode 1회분 애니메이션 · 실제 검증 파일에는 5회 반복이 포함됨</figcaption>
+          <figcaption>최종 동작 1회분 애니메이션 · 실제 검증 파일에는 5회 반복이 포함됨</figcaption>
         </figure>
         <div class="grid four" style="margin-top:16px">
           <div class="metric"><div class="label">반복</div><div class="value">5회</div></div>
           <div class="metric"><div class="label">총 시간</div><div class="value">42.5 s</div></div>
           <div class="metric"><div class="label">최소 관절 여유</div><div class="value">0.020 rad</div></div>
-          <div class="metric"><div class="label">반복 일관성</div><div class="value status-pass">PASS</div></div>
+          <div class="metric"><div class="label">반복 일관성</div><div class="value status-pass">통과</div></div>
         </div>
         <h3>반복별 결과</h3>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Repeat</th><th class="num">샘플</th><th class="num">팔↔팔 최소거리</th><th class="num">전체 최소거리</th><th class="num">관통</th></tr></thead>
+            <thead><tr><th>반복 번호</th><th class="num">샘플</th><th class="num">팔↔팔 최소거리</th><th class="num">전체 최소거리</th><th class="num">관통</th></tr></thead>
             <tbody>
               <tr><td>0</td><td class="num">851</td><td class="num">70.935 mm</td><td class="num">5.653 mm</td><td class="num">0</td></tr>
               <tr><td>1</td><td class="num">850</td><td class="num">70.935 mm</td><td class="num">5.653 mm</td><td class="num">0</td></tr>
@@ -484,7 +484,7 @@
             </tbody>
           </table>
         </div>
-        <p style="color:var(--muted);font-size:0.82rem">반복 경계의 동일한 OPEN 프레임은 중복 저장하지 않아 첫 반복은 851행, 이후 반복은 각각 850행입니다.</p>
+        <p style="color:var(--muted);font-size:0.82rem">반복 경계의 동일한 펼친 자세 프레임은 중복 저장하지 않아 첫 반복은 851행, 이후 반복은 각각 850행입니다.</p>
       </section>
 
       <section id="act">
@@ -493,21 +493,21 @@
         <div class="flow">
           <span class="node">관절 q</span><span class="arrow">+</span>
           <span class="node">이미지</span><span class="arrow">+</span>
-          <span class="node">충돌 거리 feature</span><span class="arrow">→</span>
+          <span class="node">충돌 거리 특징값</span><span class="arrow">→</span>
           <span class="node">ACT</span><span class="arrow">→</span>
-          <span class="node">다음 action chunk</span>
+          <span class="node">다음 행동 묶음</span>
         </div>
         <div class="grid two">
           <div class="callout">
             <strong>행동 학습에 사용</strong><br>
-            승인된 SAFE 시연과 전 경로가 검증된 RECOVERY 시연
+            승인된 안전 시연과 전 경로가 검증된 회복 시연
           </div>
           <div class="callout danger">
             <strong>행동 정답에서 제외</strong><br>
-            COLLISION 상태와 행동이 없는 무작위 probe
+            충돌 상태와 행동이 없는 무작위 탐색 표본
           </div>
         </div>
-        <p>원본 pairwise distance는 재사용 가능한 데이터로 보존하고, SAFE/NEAR 같은 라벨이나 정규화 feature는 별도 버전으로 만들어야 합니다. 그래야 임계값을 바꿔도 원본 데이터를 다시 계산할 필요가 없습니다.</p>
+        <p>원본 형상 쌍 거리는 재사용 가능한 데이터로 보존하고, 안전·근접 같은 라벨이나 정규화 특징값은 별도 버전으로 만들어야 합니다. 그래야 임계값을 바꿔도 원본 데이터를 다시 계산할 필요가 없습니다.</p>
       </section>
 
       <section id="limits">
@@ -516,10 +516,10 @@
         <ul>
           <li>이번 결과는 MuJoCo에서 qpos를 직접 넣고 <code>mj_forward</code>를 수행한 운동학적 검증입니다.</li>
           <li>모터 토크, 추종 오차, 균형, 관성, 케이블, 외피 변형은 검증하지 않았습니다.</li>
-          <li>mesh 거리는 MuJoCo의 convex collision 처리 결과입니다.</li>
-          <li>원본 모델의 wrist-yaw collision surface가 빠져 있습니다.</li>
-          <li>5.65 mm global minimum은 고정적으로 가까운 shoulder-roll ↔ torso pair입니다.</li>
-          <li>20 mm NEAR 기준은 Task 2 분석용 임시 값이며 공식 안전 기준이 아닙니다.</li>
+          <li>메시 거리는 MuJoCo의 볼록 충돌 처리 결과입니다.</li>
+          <li>원본 모델의 손목 요 회전축 충돌 표면이 빠져 있습니다.</li>
+          <li>5.65 mm 전체 최솟값은 고정적으로 가까운 어깨 회전부와 몸통 사이의 형상 쌍입니다.</li>
+          <li>20 mm 근접 기준은 작업 2 분석용 임시 값이며 공식 안전 기준이 아닙니다.</li>
         </ul>
         <div class="callout warn">
           따라서 결과의 의미는 “현재 모델과 검사 범위 안에서 관통이 발견되지 않았다”입니다. “실제 하드웨어에서 안전이 인증되었다”는 뜻은 아닙니다.
@@ -528,27 +528,27 @@
 
       <section id="reproduce">
         <h2>12. 재현 방법과 주요 파일</h2>
-        <p class="lead">아래 명령으로 H와 I를 다시 생성하고, 최종 궤적을 MuJoCo viewer에서 반복 재생할 수 있습니다.</p>
+        <p class="lead">아래 명령으로 H와 I를 다시 생성하고, 최종 궤적을 MuJoCo 뷰어에서 반복 재생할 수 있습니다.</p>
         <pre>&amp; 'C:\Users\lyn04\anaconda3\python.exe' -m scripts.task2.run_phase_h
 &amp; 'C:\Users\lyn04\anaconda3\python.exe' -m scripts.task2.run_phase_i
 &amp; 'C:\Users\lyn04\anaconda3\python.exe' -m unittest discover -s tests -v
 &amp; 'C:\Users\lyn04\anaconda3\python.exe' -m scripts.task2.play_trajectory --trajectory results/task2/final_trajectory.csv --repeats 1 --loop</pre>
         <div class="downloads">
-          <a href="README.md">전체 Task 2 README</a>
-          <a href="final_manifest.json">최종 Manifest JSON</a>
+          <a href="README.md">전체 작업 2 설명서</a>
+          <a href="final_manifest.json">최종 파일 목록 JSON</a>
           <a href="final_trajectory.csv">최종 궤적 CSV</a>
           <a href="final_distance_records.csv">최종 거리 기록 CSV</a>
           <a href="final_episode_summary.csv">반복별 요약 CSV</a>
           <a href="task2_field_contract.md">필드 계약 문서</a>
-          <a href="phase_h_sweep.csv">Phase H 전체 실험 CSV</a>
-          <a href="g2_labeled_states.csv">SAFE/NEAR/COLLISION 상태 데이터</a>
-          <a href="g2_recovery_demonstrations.csv">Recovery 시연 데이터</a>
-          <a href="g2_negative_collision_states.csv">Collision negative 데이터</a>
+          <a href="phase_h_sweep.csv">H단계 전체 실험 CSV</a>
+          <a href="g2_labeled_states.csv">안전·근접·충돌 상태 데이터</a>
+          <a href="g2_recovery_demonstrations.csv">회복 시연 데이터</a>
+          <a href="g2_negative_collision_states.csv">충돌 부정 데이터</a>
         </div>
       </section>
 
       <footer class="report-footer">
-        AgiBot X2 Ultra Task 2 · 모델 상대적 self-collision 및 운동학적 시연 검증 보고서
+        AgiBot X2 Ultra 작업 2 · 모델 기준 자기충돌 및 운동학적 시연 검증 보고서
       </footer>
     </main>
   </div>
